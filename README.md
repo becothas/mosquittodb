@@ -49,9 +49,17 @@ These fields should always be first and always be present in a mosquitto databas
 This header contains a chunk type id, and the chunk length.
 Having the chunk length enables skipping unknown / unwanted chunks.
 
+
+#### V5, V6
 |Name|Type|Notes|
 |----|----|-----|
 |Type|uint32|One of the Chunk type IDs|
+|Length|uint32|Length of the chunk|
+
+#### V2, V3, V4
+|Name|Type|Notes|
+|----|----|-----|
+|Type|uint16|One of the Chunk type IDs|
 |Length|uint32|Length of the chunk|
 
 ### Config Chunk
