@@ -77,6 +77,13 @@ properly and the size of a StoreID.
 |Shutdown|uint8|this field is 1 if mosquitto was shut down properly|
 |StoreIDSize|uint8|Size of a StoreID|
 
+#### V2, V3, V4
+|Name|Type|Notes|
+|----|----|-----|
+|Shutdown|uint8|this field is 1 if mosquitto was shut down properly|
+|StoreIDSize|uint8|Size of a StoreID|
+|LastStoreID|uint64|Varies in size?|
+
 ### Message Store Chunk
 
 This chunk contains one stored message.
