@@ -8,13 +8,13 @@ import (
 )
 
 type ConfigChunk struct {
-	LastDBID DBID
-	Shutdown uint8
-	DBIDSize uint8
+	LastStoreID DBID
+	Shutdown    uint8
+	StoreIDSize uint8
 }
 
 func (c ConfigChunk) String() string {
-	return fmt.Sprintf("[Config] LastID: %d; Shutdown: %d; DBIdSize: %d", c.LastDBID, c.Shutdown, c.DBIDSize)
+	return fmt.Sprintf("[Config] LastID: %d; Shutdown: %d; DBIdSize: %d", c.LastStoreID, c.Shutdown, c.StoreIDSize)
 }
 
 func (d *DB) ReadConfigChunk(hdr *ChunkHeader, cfg *ConfigChunk) error {
@@ -30,25 +30,27 @@ func (d *DB) ReadConfigChunk(hdr *ChunkHeader, cfg *ConfigChunk) error {
 	breader := bytes.NewReader(data)
 	switch d.Version() {
 	case MosqDbVersion5, MosqDbVersion6:
-		cfg.DBIDSize = data[len(data)-1]
-		if len(data) != ((int(cfg.DBIDSize) & 0xFF) + 2) {
-			return ErrUnexpectedConfigurationChunkSize
+		var err error
+		// apparently, this chunk can be padded in the end with a lot of 0s
+		cfg.StoreIDSize, err = findStoreIDSize(data)
+		if err != nil {
+			return err
 		}
-		cfg.Shutdown = data[len(data)-2]
-		cfg.LastDBID, _ = readDBID(breader, cfg.DBIDSize)
+		cfg.Shutdown = data[cfg.StoreIDSize]
+		cfg.LastStoreID, _ = readDBID(breader, cfg.StoreIDSize)
 	default:
 		err := binary.Read(breader, binary.BigEndian, &cfg.Shutdown)
 		if err != nil {
 			return err
 		}
-		err = binary.Read(breader, binary.BigEndian, &cfg.DBIDSize)
+		err = binary.Read(breader, binary.BigEndian, &cfg.StoreIDSize)
 		if err != nil {
 			return err
 		}
-		if len(data) != ((int(cfg.DBIDSize) & 0xFF) + 2) {
+		if len(data) != ((int(cfg.StoreIDSize) & 0xFF) + 2) {
 			return ErrUnexpectedConfigurationChunkSize
 		}
-		cfg.LastDBID, err = readDBID(breader, cfg.DBIDSize)
+		cfg.LastStoreID, err = readDBID(breader, cfg.StoreIDSize)
 		if err != nil {
 			return err
 		}

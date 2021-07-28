@@ -58,7 +58,7 @@ func (d *DB) Version() uint32 {
 func (d *DB) ReadChunkHeader(hdr *ChunkHeader) error {
 	switch d.Version() {
 	case MosqDbVersion5, MosqDbVersion6:
-		err := binary.Read(d.reader, binary.BigEndian, &hdr)
+		err := binary.Read(d.reader, binary.BigEndian, hdr)
 		if err != nil {
 			return err
 		}

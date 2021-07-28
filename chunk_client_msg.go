@@ -8,7 +8,7 @@ import (
 )
 
 type ClientMsgChunk struct {
-	ID             DBID
+	StoreID        DBID
 	MID            uint16
 	QoS            uint8
 	State          uint8
@@ -28,7 +28,7 @@ func (c ClientMsgChunk) String() string {
 func (d *DB) readClientMsgChunkV56(hdr *ChunkHeader, chunk *ClientMsgChunk) error {
 	length := hdr.Length
 	var err error
-	chunk.ID, err = readDBID(d.reader, d.Config.DBIDSize)
+	chunk.StoreID, err = readDBID(d.reader, d.Config.StoreIDSize)
 	if err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func (d *DB) readClientMsgChunkV56(hdr *ChunkHeader, chunk *ClientMsgChunk) erro
 	chunk.Dup = (pfClientMsg.RetainDup & 0x0F) > 0
 	chunk.Direction = pfClientMsg.Direction
 
-	length -= (uint32(d.Config.DBIDSize) & 0xFF) +
+	length -= (uint32(d.Config.StoreIDSize) & 0xFF) +
 		uint32(unsafe.Sizeof(pfClientMsg)) +
 		(uint32(pfClientMsg.IDLen) & 0xFFFF)
 
@@ -82,7 +82,7 @@ func (d *DB) readClientMsgChunkV234(hdr *ChunkHeader, chunk *ClientMsgChunk) err
 		return err
 	}
 
-	chunk.ID, err = readDBID(d.reader, d.Config.DBIDSize)
+	chunk.StoreID, err = readDBID(d.reader, d.Config.StoreIDSize)
 	if err != nil {
 		return err
 	}

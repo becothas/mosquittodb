@@ -3,11 +3,11 @@ package mosquittodb
 import "fmt"
 
 type RetainChunk struct {
-	ID DBID
+	StoreID DBID
 }
 
 func (r RetainChunk) String() string {
-	return fmt.Sprintf("[Retained](id:%d)", r.ID)
+	return fmt.Sprintf("[Retained](id:%d)", r.StoreID)
 }
 
 func (d *DB) ReadRetainChunk(hdr *ChunkHeader, chunk *RetainChunk) error {
@@ -15,7 +15,7 @@ func (d *DB) ReadRetainChunk(hdr *ChunkHeader, chunk *RetainChunk) error {
 		return ErrBadChunkID
 	}
 	var err error
-	chunk.ID, err = readDBID(d.reader, d.Config.DBIDSize)
+	chunk.StoreID, err = readDBID(d.reader, d.Config.StoreIDSize)
 	if err != nil {
 		return err
 	}

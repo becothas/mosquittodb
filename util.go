@@ -54,3 +54,15 @@ func readString(r io.Reader) (string, error) {
 	}
 	return readStringLen(r, size)
 }
+
+func findStoreIDSize(chunkData []byte) (uint8, error) {
+	for apparentSize := len(chunkData)-1; apparentSize >= 0; apparentSize-- {
+		if chunkData[apparentSize] != 0 {
+			if apparentSize+1 == (int(chunkData[apparentSize]) & 0xFF) + 2 {
+				return chunkData[apparentSize], nil
+			}
+		}
+	}
+	return 0, ErrUnexpectedConfigurationChunkSize
+}
+

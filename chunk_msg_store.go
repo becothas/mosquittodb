@@ -9,7 +9,7 @@ import (
 )
 
 type MsgStoreChunk struct {
-	ID         DBID
+	StoreID    DBID
 	ExpiryTime time.Time
 	SourceMID  uint16
 	SourcePort uint16
@@ -52,7 +52,7 @@ func (d *DB) readMsgStoreChunkV56(hdr *ChunkHeader, chunk *MsgStoreChunk) error 
 		chunk.Retain = true
 	}
 
-	length -= (uint32(d.Config.DBIDSize) & 0xFF) +
+	length -= (uint32(d.Config.StoreIDSize) & 0xFF) +
 		uint32(unsafe.Sizeof(msgStoreLengths)) +
 		msgStoreLengths.PayloadLen +
 		(uint32(msgStoreLengths.SourceIDLen) & 0XFFFF) +
@@ -151,7 +151,7 @@ func (d *DB) ReadMsgStoreChunk(hdr *ChunkHeader, chunk *MsgStoreChunk) error {
 		return ErrBadChunkID
 	}
 	var err error
-	chunk.ID, err = readDBID(d.reader, d.Config.DBIDSize)
+	chunk.StoreID, err = readDBID(d.reader, d.Config.StoreIDSize)
 	if err != nil {
 		return err
 	}
