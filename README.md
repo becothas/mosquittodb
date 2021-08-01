@@ -191,7 +191,7 @@ The StoreID seems to refer to a Message in a store chunk.
 
 |Name|Type|Notes|
 |----|----|-----|
-|Identifier|uint32|??Not sure|
+|Identifier|uint32|mqttv5 subscription identifier|
 |IDLen|uint16|Length of client id|
 |TopicLen|uint16|Length of topic|
 |QoS|uint8|Quality of service|
@@ -218,7 +218,7 @@ This chunk keeps information about one client.
 |Name|Type|Notes|
 |----|----|-----|
 |SessionExpiryTime|int64|Timestamp when the client is considered expired|
-|SessionExpiryInterval|uint32|??Not sure what this is|
+|SessionExpiryInterval|uint32|Used for mqttv5 clients, set by "Session Expiry Interval" property|
 |LastMID|uint16|Last MessageID for client|
 |IDLen|uint16|Length of client id|
 |ListenerPort|uint16|Listener port. **new in v6**|
@@ -232,7 +232,7 @@ This chunk keeps information about one client.
 |Name|Type|Notes|
 |----|----|-----|
 |SessionExpiryTime|int64|Timestamp when the client is considered expired|
-|SessionExpiryInterval|uint32|??Not sure what this is|
+|SessionExpiryInterval|uint32|Used for mqttv5 clients, set by "Session Expiry Interval" property|
 |LastMID|uint16|Last MessageID for client|
 |IDLen|uint16|Length of client id|
 |ClientID|string|Client id. size comes from `IDLen` field|
