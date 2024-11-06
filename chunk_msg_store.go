@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"time"
+	"unicode/utf8"
 	"unsafe"
 )
 
@@ -24,7 +25,10 @@ type MsgStoreChunk struct {
 }
 
 func (m MsgStoreChunk) String() string {
-	return fmt.Sprintf("[Store](q:%d, ret:%v)-'%s': %q", m.QoS, m.Retain, m.SourceID, m.Topic)
+	if utf8.ValidString(string(m.Payload)) {
+		return fmt.Sprintf("[Store](q:%d, ret:%v)-'%s': %q | %s", m.QoS, m.Retain, m.SourceID, m.Topic, m.Payload)
+	}
+	return fmt.Sprintf("[Store](q:%d, ret:%v)-'%s': %q | %X", m.QoS, m.Retain, m.SourceID, m.Topic, m.Payload)
 }
 
 func (d *DB) readMsgStoreChunkV56(hdr *ChunkHeader, chunk *MsgStoreChunk) error {
@@ -55,7 +59,7 @@ func (d *DB) readMsgStoreChunkV56(hdr *ChunkHeader, chunk *MsgStoreChunk) error 
 	length -= (uint32(d.Config.StoreIDSize) & 0xFF) +
 		uint32(unsafe.Sizeof(msgStoreLengths)) +
 		msgStoreLengths.PayloadLen +
-		(uint32(msgStoreLengths.SourceIDLen) & 0XFFFF) +
+		(uint32(msgStoreLengths.SourceIDLen) & 0xFFFF) +
 		(uint32(msgStoreLengths.SourceUsernameLen) & 0xFFFF) +
 		(uint32(msgStoreLengths.TopicLen) & 0xFFFF)
 
