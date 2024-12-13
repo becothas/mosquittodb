@@ -26,6 +26,7 @@ func (d *DB) readSubscriptionChunkV5(hdr *ChunkHeader, chunk *SubscriptionChunk)
 		TopicLen   uint16
 		QoS        uint8
 		Options    uint8
+		Padding    [2]uint8
 	}{}
 	if err := binary.Read(d.reader, binary.BigEndian, &pfSub); err != nil {
 		return err
