@@ -1,3 +1,3 @@
-module github.com/iotopen/mosquittodb
+module github.com/becothas/mosquittodb
 
 go 1.16
