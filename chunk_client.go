@@ -49,7 +49,10 @@ func (d *DB) readClientChunkV56(hdr *ChunkHeader, chunk *ClientChunk) error {
 			return err
 		}
 		if pfClient.UsernameLen > 0 {
-			chunk.Username, err = readStringLen(d.reader, pfClient.IDLen)
+			chunk.Username, err = readStringLen(d.reader, pfClient.UsernameLen)
+			if err != nil {
+				return err
+			}
 		}
 
 	case MosqDbVersion5:
